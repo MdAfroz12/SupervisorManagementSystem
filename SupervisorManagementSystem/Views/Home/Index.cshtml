@@ -1,0 +1,2438 @@
+﻿@{
+    ViewData["Title"] = "Supervisor Dashboard";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        /* INLINE MINIMAL CSS FOR INITIAL RENDER */
+        :root {
+            --primary-blue: #1e3c72;
+            --secondary-blue: #2a5298;
+            --accent-gold: #ffc107;
+            --light-blue: #e8f4fd;
+            --white: #ffffff;
+            --gray-light: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+        }
+
+        .dashboard-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-small {
+            width: 40px;
+            height: 40px;
+        }
+
+            .logo-small img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                border-radius: 6px;
+            }
+
+        .header-title h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .btn-logout {
+            background: white;
+            color: var(--primary-blue);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dashboard-main {
+            flex: 1;
+            padding: 20px 40px;
+            overflow-y: auto;
+        }
+
+        .step-content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+            .step-content.active {
+                display: block;
+            }
+    </style>
+
+    <!-- EXTERNAL CSS -->
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- HEADER -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="logo-small">
+                    <img src="~/Image/Nagpur_University_logo.jpg" alt="RTMNU Logo"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxNSIgY3k9IjE1IiByPSIxNSIgZmlsbD0iIzFlM2M3MiIvPjx0ZXh0IHg9IjE1IiB5PSIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmb250LXdlaWdodD0iYm9sZCI+UlRNTlU8L3RleHQ+PC9zdmc+';">
+                </div>
+                <div class="header-title">
+                    <h1>Supervisor Dashboard</h1>
+                </div>
+            </div>
+
+            <button class="btn-logout" onclick="logout()">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="dashboard-main">
+            <div class="step-indicator">
+                <p class="step-info">
+                    <i class="bi bi-info-circle"></i> Fill all form fields to go to next step
+                </p>
+            </div>
+
+            <!-- STEPPER -->
+            <div class="stepper-container">
+                <div class="stepper">
+                    <div class="step active" onclick="showStep('A')">A</div>
+                    <div class="line active"></div>
+
+                    <div class="step" onclick="showStep('B')">B</div>
+                    <div class="line"></div>
+
+                    <div class="step" onclick="showStep('C')">C</div>
+                    <div class="line"></div>
+
+                    <div class="step" onclick="showStep('D')">D</div>
+                    <div class="line"></div>
+
+                    <div class="step" onclick="showStep('E')">E</div>
+                    <div class="line"></div>
+
+                    <div class="step" onclick="showStep('F')">F</div>
+                    <div class="line"></div>
+
+                    <div class="step" onclick="showStep('G')">G</div>
+                    <div class="line"></div>
+
+                    <div class="step" onclick="showStep('H')">H</div>
+                </div>
+            </div>
+
+            <!-- STEP CONTENT AREA -->
+            <div class="step-content-area">
+                <!-- Step A Content - Personal Details -->
+                <div class="step-content active" id="stepA">
+                    <div class="content-header">
+                        <h2><i class="bi bi-person-lines-fill"></i> A. Personal Details</h2>
+                        <p>Complete your personal information</p>
+                    </div>
+
+                    <div class="user-basic-info">
+                        <div class="info-card">
+                            <h3><i class="bi bi-person-badge"></i> Basic Information</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Email ID:</label>
+                                    <div class="info-value" id="sessionEmail">@Context.Session.GetString("Email")</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Aadhar Number:</label>
+                                    <div class="info-value" id="sessionAadhar">@Context.Session.GetString("Aadhar")</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Mobile Number:</label>
+                                    <div class="info-value" id="sessionMobile">@Context.Session.GetString("Mobile")</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Full Name:</label>
+                                    <div class="info-value" id="sessionFullName">@Context.Session.GetString("FullName")</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="personal-form">
+                        <form id="personalDetailsForm">
+                            <!-- IMAGE UPLOAD SECTION -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-image"></i> Photograph Upload</h3>
+
+                                <div class="image-upload-container">
+                                    <div class="image-preview" id="imagePreview">
+                                        <i class="bi bi-person-circle"></i>
+                                        <p>No image selected</p>
+                                    </div>
+
+                                    <div class="upload-controls">
+                                        <input type="file" id="photoUpload" accept="image/*" class="file-input"
+                                               style="display: none;" onchange="previewImage(event)">
+                                        <button type="button" class="btn btn-upload" onclick="document.getElementById('photoUpload').click()">
+                                            <i class="bi bi-upload"></i> Upload Photo
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="removeImage()">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </button>
+                                    </div>
+
+                                    <div class="upload-instructions">
+                                        <p><i class="bi bi-info-circle"></i> Requirements:</p>
+                                        <ul>
+                                            <li>Recent passport size photograph</li>
+                                            <li>Max file size: 2MB</li>
+                                            <li>Formats: JPG, PNG, JPEG</li>
+                                            <li>White background preferred</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 1: Name in Full (Block Letters) -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-card-heading"></i> 1. Name in Full (In Block Letters)</h3>
+
+                                <div class="name-table-container">
+                                    <table class="name-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Surname</th>
+                                                <th>Middle Name</th>
+                                                <th>First Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="text" id="surname" class="form-control" required></td>
+                                                <td><input type="text" id="middleName" class="form-control"></td>
+                                                <td><input type="text" id="firstName" class="form-control" required></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <@* div class="form-row">
+                                    <div class="form-col full-width">
+                                        <label for="nameInWords">(In words)</label>
+                                        <input type="text" id="nameInWords" class="form-control" placeholder="Enter name in words">
+                                    </div>
+                                </div> *@
+                            </div>
+
+                            <!-- Section 2: Father/Husband Name -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-people-fill"></i> 2. Name of Father/Husband</h3>
+
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="fatherHusbandName">Father/Husband Name *</label>
+                                        <input type="text" id="fatherHusbandName" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 3: Date of Birth -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-calendar"></i> 3. Date of Birth</h3>
+
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="dateOfBirth">Date of Birth *</label>
+                                        <input type="date" id="dateOfBirth" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 4: Address Details -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-geo-alt"></i> 4. Address Details</h3>
+
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="permanentAddress">(4) Permanent Address *</label>
+                                        <textarea id="permanentAddress" class="form-control" rows="3" required></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="correspondenceAddress">(5) Address for Correspondence *</label>
+                                        <textarea id="correspondenceAddress" class="form-control" rows="3" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 5: Personal Information -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-person-badge"></i> 5. Personal Information</h3>
+
+                                 <div class="form-row">
+                                <div class="form-col">
+                              <label for="maritalStatus">(6) Marital Status *</label>
+                             <select id="maritalStatus" name="maritalStatus" class="form-control" required>
+                                    <option value="">Select Marital Status</option>
+                                     <option value="Married">Married</option>
+                                     <option value="Single">Single</option>
+                            </select>
+                            </div>
+
+                                           <div class="form-col">
+                                      <label for="religion">(7) Religion *</label>
+                                     <input type="text" id="religion" class="form-control" required>
+                                </div>
+                              </div>
+                                <<div class="form-row">
+                                    <div class="form-col">
+                                        <label for="nationality">(8) Nationality *</label>
+                                        <select id="nationality" name="nationality" class="form-control" required>
+                                            <option value="">Select Nationality</option>
+                                            <option value="Indian" selected>Indian</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-col">
+                                        <label for="caste">(9) Caste *</label>
+                                        <input type="text" id="caste" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 6: Backward Class Details -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-person-check"></i> 6. Backward Class Details</h3>
+
+                                <div class="form-group">
+                                    <h4>(10)(a) Whether belong to backward class:</h4>
+                                    <div class="radio-group">
+                                        <label class="radio-option">
+                                            <input type="radio" name="backwardClass" value="Yes"> Yes
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="backwardClass" value="No"> No
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="categoryField" style="display: none;">
+                                    <h4>(10)(b) If yes, specify category:</h4>
+                                    <div class="form-row">
+                                        <div class="form-col">
+                                            <select id="category" class="form-control">
+                                                <option value="">Select Category</option>
+                                                <option value="SC">SC</option>
+                                                <option value="ST">ST</option>
+                                                <option value="OBC">OBC</option>
+                                                <option value="VJ">VJ</option>
+                                                <option value="NT">NT</option>
+                                                <option value="SBC">SBC</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 7: Language Details -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-translate"></i> 7. Language Details</h3>
+
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="motherTongue">(11) Mother Tongue *</label>
+                                        <select id="motherTongue" name="motherTongue" class="form-control" required>
+                                            <option value="">Select Mother Tongue</option>
+                                            <option value="Hindi">Hindi</option>
+                                            <option value="Marathi">Marathi</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-col">
+                                        <label for="languagesKnown">(12) Languages Known *</label>
+                                        <input type="text" id="languagesKnown" class="form-control"
+                                               placeholder="e.g., Hindi, English, Marathi" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                                    <i class="bi bi-eraser"></i> Clear All
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Save & Next (Step B)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+              
+                <!-- Step B Content -->
+                <div class="step-content active" id="stepB">
+                    <div class="content-header">
+                        <h2><i class="bi bi-file-text"></i> B. Details of Examinations Passed</h2>
+                        <p>Fill your educational qualification details</p>
+                    </div>
+
+                    <div class="education-form">
+                        <form id="educationDetailsForm">
+                            <!-- Exam Table -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-mortarboard"></i> Examination Details</h3>
+
+                                <div class="table-responsive">
+                                    <table class="exam-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name of the Examination</th>
+                                                <th>Board / University</th>
+                                                <th>Year of Passing</th>
+                                                <th>Name of the Institute</th>
+                                                <th>Division</th>
+                                                <th>Marks Type</th>
+                                                <th>Marks/CGPA Obtained</th>
+                                                <th>Total Marks/CGPA</th>
+                                                <th>Percentage/CGPA</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="examRows">
+                                            <!-- 10th Standard Row -->
+                                            <tr class="exam-row" data-exam="10th">
+                                                <td>
+                                                    <div class="form-control exam-name-static">10th Standard or equivalent *</div>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control board-university" required>
+                                                        <option value="">Select Board</option>
+                                                        <option value="MSBSHSE">Maharashtra State Board of Secondary & Higher Secondary Education (MSBSHSE)</option>
+                                                        <option value="CBSE">Central Board of Secondary Education (CBSE)</option>
+                                                        <option value="CISCE">Council for the Indian School Certificate Examinations (CISCE - ICSE/ISC)</option>
+                                                        <option value="NIOS">National Institute of Open Schooling (NIOS)</option>
+                                                        <option value="IB">International Baccalaureate (IB)</option>
+                                                        <option value="CAIE">Cambridge Assessment International Education (CAIE)</option>
+                                                        <option value="Other">Others</option>
+                                                    </select>
+                                                    <div class="other-board-container" style="display: none; margin-top: 5px;">
+                                                        <input type="text" class="form-control other-board" placeholder="Specify other board">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control passing-year" min="1950" max="2024" placeholder="YYYY" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control institute-name" placeholder="School name" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control division" placeholder="e.g., First" required>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control marks-type" required>
+                                                        <option value="">Select Type</option>
+                                                        <option value="Percentage">Percentage</option>
+                                                        <option value="CGPA">CGPA</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control obtained-marks" step="0.01" min="0" placeholder="Obtained" required>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control total-marks" step="0.01" min="0" placeholder="Total" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control percentage" readonly placeholder="Auto calculated">
+                                                </td>
+                                            </tr>
+
+                                            <!-- 12th Standard Row -->
+                                            <tr class="exam-row" data-exam="12th">
+                                                <td>
+                                                    <div class="form-control exam-name-static">12th Standard or equivalent *</div>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control board-university" required>
+                                                        <option value="">Select Board</option>
+                                                        <option value="MSBSHSE">Maharashtra State Board of Secondary & Higher Secondary Education (MSBSHSE)</option>
+                                                        <option value="CBSE">Central Board of Secondary Education (CBSE)</option>
+                                                        <option value="CISCE">Council for the Indian School Certificate Examinations (CISCE - ICSE/ISC)</option>
+                                                        <option value="NIOS">National Institute of Open Schooling (NIOS)</option>
+                                                        <option value="IB">International Baccalaureate (IB)</option>
+                                                        <option value="CAIE">Cambridge Assessment International Education (CAIE)</option>
+                                                        <option value="Other">Others</option>
+                                                    </select>
+                                                    <div class="other-board-container" style="display: none; margin-top: 5px;">
+                                                        <input type="text" class="form-control other-board" placeholder="Specify other board">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control passing-year" min="1950" max="2024" placeholder="YYYY" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control institute-name" placeholder="School/College name" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control division" placeholder="e.g., First" required>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control marks-type" required>
+                                                        <option value="">Select Type</option>
+                                                        <option value="Percentage">Percentage</option>
+                                                        <option value="CGPA">CGPA</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control obtained-marks" step="0.01" min="0" placeholder="Obtained" required>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control total-marks" step="0.01" min="0" placeholder="Total" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control percentage" readonly placeholder="Auto calculated">
+                                                </td>
+                                            </tr>
+
+                                            <!-- Undergraduate Row -->
+                                            <tr class="exam-row" data-exam="UG">
+                                                <td>
+                                                    <select class="form-control exam-name" required>
+                                                        <option value="">Select undergraduate</option>
+                                                        <option value="B.Tech/B.E.">B.Tech/B.E.</option>
+                                                        <option value="B.Sc.">B.Sc.</option>
+                                                        <option value="B.Com.">B.Com.</option>
+                                                        <option value="B.A.">B.A.</option>
+                                                        <option value="BBA">BBA</option>
+                                                        <option value="MBBS">MBBS</option>
+                                                        <option value="B.Pharm">B.Pharm</option>
+                                                        <option value="LLB">LLB</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                    <div class="other-exam-container" style="display: none; margin-top: 5px;">
+                                                        <input type="text" class="form-control other-exam" placeholder="Specify other degree">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control board-university" required>
+                                                        <option value="" disabled selected>Select University</option>
+                                                        <option value="Mahatma Gandhi Antarrashtriya Hindi Vishwavidyalaya, Wardha">Mahatma Gandhi Antarrashtriya Hindi Vishwavidyalaya, Wardha</option>
+                                                        <option value="University of Mumbai">University of Mumbai</option>
+                                                        <option value="Savitribai Phule Pune University">Savitribai Phule Pune University</option>
+                                                        <option value="Rashtrasant Tukadoji Maharaj Nagpur University">Rashtrasant Tukadoji Maharaj Nagpur University</option>
+                                                        <option value="Dr. Babasaheb Ambedkar Marathwada University">Dr. Babasaheb Ambedkar Marathwada University</option>
+                                                        <option value="Shivaji University, Kolhapur">Shivaji University, Kolhapur</option>
+                                                        <option value="Sant Gadge Baba Amravati University">Sant Gadge Baba Amravati University</option>
+                                                        <option value="Kavayitri Bahinabai Chaudhari North Maharashtra University">Kavayitri Bahinabai Chaudhari North Maharashtra University</option>
+                                                        <option value="Swami Ramanand Teerth Marathwada University">Swami Ramanand Teerth Marathwada University</option>
+                                                        <option value="Punyashlok Ahilyadevi Holkar Solapur University">Punyashlok Ahilyadevi Holkar Solapur University</option>
+                                                        <option value="Gondwana University, Gadchiroli">Gondwana University, Gadchiroli</option>
+                                                        <option value="SNDT Women's University">SNDT Women's University</option>
+                                                        <option value="Dr. Babasaheb Ambedkar Technological University">Dr. Babasaheb Ammedkar Technological University</option>
+                                                        <option value="COEP Technological University">COEP Technological University</option>
+                                                        <option value="Maharashtra University of Health Sciences">Maharashtra University of Health Sciences</option>
+                                                        <option value="Maharashtra Animal & Fishery Sciences University">Maharashtra Animal & Fishery Sciences University</option>
+                                                        <option value="Maharashtra State Skills University">Maharashtra State Skills University</option>
+                                                        <option value="Maharashtra International Sports University">Maharashtra International Sports University</option>
+                                                        <option value="Kavi Kulaguru Kalidas Sanskrit University">Kavi Kulaguru Kalidas Sanskrit University</option>
+                                                        <option value="Mahatma Phule Krishi Vidyapeeth">Mahatma Phule Krishi Vidyapeeth</option>
+                                                        <option value="Dr. Panjabrao Deshmukh Krishi Vidyapeeth">Dr. Panjabrao Deshmukh Krishi Vidyapeeth</option>
+                                                        <option value="Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth">Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth</option>
+                                                        <option value="Vasantrao Naik Marathwada Krishi Vidyapeeth">Vasantrao Naik Marathwada Krishi Vidyapeeth</option>
+                                                        <option value="Maharashtra National Law University, Mumbai">Maharashtra National Law University, Mumbai</option>
+                                                        <option value="Maharashtra National Law University, Nagpur">Maharashtra National Law University, Nagpur</option>
+                                                        <option value="Maharashtra National Law University, Aurangabad">Maharashtra National Law University, Aurangabad</option>
+                                                        <option value="Tata Institute of Social Sciences">Tata Institute of Social Sciences</option>
+                                                        <option value="Tata Institute of Fundamental Research">Tata Institute of Fundamental Research</option>
+                                                        <option value="Homi Bhabha National Institute">Homi Bhabha National Institute</option>
+                                                        <option value="Bharati Vidyapeeth">Bharati Vidyapeeth</option>
+                                                        <option value="Datta Meghe Institute of Medical Sciences">Datta Meghe Institute of Medical Sciences</option>
+                                                        <option value="Gokhale Institute of Politics and Economics">Gokhale Institute of Politics and Economics</option>
+                                                        <option value="Indira Gandhi Institute of Development Research">Indira Gandhi Institute of Development Research</option>
+                                                        <option value="Defence Institute of Advanced Technology">Defence Institute of Advanced Technology</option>
+                                                        <option value="Central Institute of Fisheries Education">Central Institute of Fisheries Education</option>
+                                                        <option value="Deccan College Post-Graduate & Research Institute">Deccan College Post-Graduate & Research Institute</option>
+                                                        <option value="Amity University, Mumbai">Amity University, Mumbai</option>
+                                                        <option value="Ajeenkya D Y Patil University">Ajeenkya D Y Patil University</option>
+                                                        <option value="ATLAS SkillTech University">ATLAS SkillTech University</option>
+                                                        <option value="MIT World Peace University">MIT World Peace University</option>
+                                                        <option value="Sandip University">Sandip University</option>
+                                                        <option value="Sanjay Ghodawat University">Sanjay Ghodawat University</option>
+                                                        <option value="Somaiya Vidyavihar University">Somaiya Vidyavihar University</option>
+                                                        <option value="Vishwakarma University">Vishwakarma University</option>
+                                                        <option value="Vijaybhoomi University">Vijaybhoomi University</option>
+                                                        <option value="MGM University">MGM University</option>
+                                                        <option value="Symbiosis Skills and Professional University">Symbiosis Skills and Professional University</option>
+                                                        <option value="D Y Patil International University">D Y Patil International University</option>
+                                                        <option value="Pillai University">Pillai University</option>
+                                                        <option value="FLAME University">FLAME University</option>
+                                                        <option value="G H Raisoni University">G H Raisoni University</option>
+                                                        <option value="Others">Others</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control passing-year" min="1950" max="2024" placeholder="YYYY" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control institute-name" placeholder="College/Institute name" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control division" placeholder="e.g., First" required>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control marks-type" required>
+                                                        <option value="">Select Type</option>
+                                                        <option value="Percentage">Percentage</option>
+                                                        <option value="CGPA">CGPA</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control obtained-marks" step="0.01" min="0" placeholder="Obtained" required>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control total-marks" step="0.01" min="0" placeholder="Total" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control percentage" readonly placeholder="Auto calculated">
+                                                </td>
+                                            </tr>
+                                            <!-- postgraduate Row -->
+                                            <tr class="exam-row" data-exam="PG">
+                                                <td>
+                                                    <select class="form-control exam-name" required>
+                                                        <option value="">Select postgraduate</option>
+                                                        <option value="M.Tech/M.E.">M.Tech/M.E.</option>
+                                                        <option value="M.Sc.">M.Sc.</option>
+                                                        <option value="M.Com.">M.Com.</option>
+                                                        <option value="M.A.">M.A.</option>
+                                                        <option value="MBA">MBA</option>
+                                                        <option value="MD/MS">MD/MS</option>
+                                                        <option value="M.Pharm">M.Pharm</option>
+                                                        <option value="LLM">LLM</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                    <div class="other-exam-container" style="display: none; margin-top: 5px;">
+                                                        <input type="text" class="form-control other-exam" placeholder="Specify other degree">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control board-university" required>
+                                                        <option value="" disabled selected>Select University</option>
+                                                        <option value="Mahatma Gandhi Antarrashtriya Hindi Vishwavidyalaya, Wardha">Mahatma Gandhi Antarrashtriya Hindi Vishwavidyalaya, Wardha</option>
+                                                        <option value="University of Mumbai">University of Mumbai</option>
+                                                        <option value="Savitribai Phule Pune University">Savitribai Phule Pune University</option>
+                                                        <option value="Rashtrasant Tukadoji Maharaj Nagpur University">Rashtrasant Tukadoji Maharaj Nagpur University</option>
+                                                        <option value="Dr. Babasaheb Ambedkar Marathwada University">Dr. Babasaheb Ambedkar Marathwada University</option>
+                                                        <option value="Shivaji University, Kolhapur">Shivaji University, Kolhapur</option>
+                                                        <option value="Sant Gadge Baba Amravati University">Sant Gadge Baba Amravati University</option>
+                                                        <option value="Kavayitri Bahinabai Chaudhari North Maharashtra University">Kavayitri Bahinabai Chaudhari North Maharashtra University</option>
+                                                        <option value="Swami Ramanand Teerth Marathwada University">Swami Ramanand Teerth Marathwada University</option>
+                                                        <option value="Punyashlok Ahilyadevi Holkar Solapur University">Punyashlok Ahilyadevi Holkar Solapur University</option>
+                                                        <option value="Gondwana University, Gadchiroli">Gondwana University, Gadchiroli</option>
+                                                        <option value="SNDT Women's University">SNDT Women's University</option>
+                                                        <option value="Dr. Babasaheb Ambedkar Technological University">Dr. Babasaheb Ammedkar Technological University</option>
+                                                        <option value="COEP Technological University">COEP Technological University</option>
+                                                        <option value="Maharashtra University of Health Sciences">Maharashtra University of Health Sciences</option>
+                                                        <option value="Maharashtra Animal & Fishery Sciences University">Maharashtra Animal & Fishery Sciences University</option>
+                                                        <option value="Maharashtra State Skills University">Maharashtra State Skills University</option>
+                                                        <option value="Maharashtra International Sports University">Maharashtra International Sports University</option>
+                                                        <option value="Kavi Kulaguru Kalidas Sanskrit University">Kavi Kulaguru Kalidas Sanskrit University</option>
+                                                        <option value="Mahatma Phule Krishi Vidyapeeth">Mahatma Phule Krishi Vidyapeeth</option>
+                                                        <option value="Dr. Panjabrao Deshmukh Krishi Vidyapeeth">Dr. Panjabrao Deshmukh Krishi Vidyapeeth</option>
+                                                        <option value="Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth">Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth</option>
+                                                        <option value="Vasantrao Naik Marathwada Krishi Vidyapeeth">Vasantrao Naik Marathwada Krishi Vidyapeeth</option>
+                                                        <option value="Maharashtra National Law University, Mumbai">Maharashtra National Law University, Mumbai</option>
+                                                        <option value="Maharashtra National Law University, Nagpur">Maharashtra National Law University, Nagpur</option>
+                                                        <option value="Maharashtra National Law University, Aurangabad">Maharashtra National Law University, Aurangabad</option>
+                                                        <option value="Tata Institute of Social Sciences">Tata Institute of Social Sciences</option>
+                                                        <option value="Tata Institute of Fundamental Research">Tata Institute of Fundamental Research</option>
+                                                        <option value="Homi Bhabha National Institute">Homi Bhabha National Institute</option>
+                                                        <option value="Bharati Vidyapeeth">Bharati Vidyapeeth</option>
+                                                        <option value="Datta Meghe Institute of Medical Sciences">Datta Meghe Institute of Medical Sciences</option>
+                                                        <option value="Gokhale Institute of Politics and Economics">Gokhale Institute of Politics and Economics</option>
+                                                        <option value="Indira Gandhi Institute of Development Research">Indira Gandhi Institute of Development Research</option>
+                                                        <option value="Defence Institute of Advanced Technology">Defence Institute of Advanced Technology</option>
+                                                        <option value="Central Institute of Fisheries Education">Central Institute of Fisheries Education</option>
+                                                        <option value="Deccan College Post-Graduate & Research Institute">Deccan College Post-Graduate & Research Institute</option>
+                                                        <option value="Amity University, Mumbai">Amity University, Mumbai</option>
+                                                        <option value="Ajeenkya D Y Patil University">Ajeenkya D Y Patil University</option>
+                                                        <option value="ATLAS SkillTech University">ATLAS SkillTech University</option>
+                                                        <option value="MIT World Peace University">MIT World Peace University</option>
+                                                        <option value="Sandip University">Sandip University</option>
+                                                        <option value="Sanjay Ghodawat University">Sanjay Ghodawat University</option>
+                                                        <option value="Somaiya Vidyavihar University">Somaiya Vidyavihar University</option>
+                                                        <option value="Vishwakarma University">Vishwakarma University</option>
+                                                        <option value="Vijaybhoomi University">Vijaybhoomi University</option>
+                                                        <option value="MGM University">MGM University</option>
+                                                        <option value="Symbiosis Skills and Professional University">Symbiosis Skills and Professional University</option>
+                                                        <option value="D Y Patil International University">D Y Patil International University</option>
+                                                        <option value="Pillai University">Pillai University</option>
+                                                        <option value="FLAME University">FLAME University</option>
+                                                        <option value="G H Raisoni University">G H Raisoni University</option>
+                                                        <option value="Others">Others</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control passing-year" min="1950" max="2024" placeholder="YYYY" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control institute-name" placeholder="College/Institute name" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control division" placeholder="e.g., First" required>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control marks-type" required>
+                                                        <option value="">Select Type</option>
+                                                        <option value="Percentage">Percentage</option>
+                                                        <option value="CGPA">CGPA</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control obtained-marks" step="0.01" min="0" placeholder="Obtained" required>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control total-marks" step="0.01" min="0" placeholder="Total" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control percentage" readonly placeholder="Auto calculated">
+                                                </td>
+                                            </tr>
+
+                                            <!-- Add More Rows Button -->
+                                            <tr id="addMoreRow">
+                                                <td colspan="9" class="text-center">
+                                                    <button type="button" class="btn btn-add" onclick="addExamRow()">
+                                                        <i class="bi bi-plus-circle"></i> Add More Qualification
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                @* <div class="table-instructions">
+                                    <p><i class="bi bi-info-circle"></i> Instructions:</p>
+                                    <ul>
+                                        <li>Fill all fields for each examination</li>
+                                        <li>10th and 12th are mandatory fields</li>
+                                        <li>Division should be entered as text (e.g., First, Second, Distinction)</li>
+                                        <li>Percentage will be automatically calculated when you enter obtained and total marks</li>
+                                        <li>For CGPA, enter the CGPA directly in obtained marks field (Total will auto-set to 10)</li>
+                                    </ul>
+                                </div>
+ *@                            </div>
+
+                            <!-- NEW FIELDS ADDED HERE - Highest Qualification and PhD Thesis -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-award-fill"></i> Additional Qualification Details</h3>
+
+                                <!-- 15) Highest qualification acquired -->
+                                <div class="form-subsection">
+                                    <h4><i class="bi bi-mortarboard-fill"></i> 15) Highest qualification acquired *</h4>
+
+                                    <div class="form-row">
+                                        <div class="form-col">
+                                            <label for="highestQualification">Select Highest Qualification</label>
+                                            <select id="highestQualification" name="highestQualification" class="form-control" required>
+                                                <option value="">Select Highest Qualification</option>
+                                                <option value="Ph.D.">Ph.D.</option>
+                                                <option value="Post Doctorate">Post Doctorate</option>
+                                                <option value="D.Sc.">D.Sc. (Doctor of Science)</option>
+                                                <option value="D.Litt.">D.Litt. (Doctor of Letters)</option>
+                                                <option value="M.Phil.">M.Phil.</option>
+                                                <option value="M.Tech/M.E.">M.Tech/M.E. (Postgraduate)</option>
+                                                <option value="M.Sc.">M.Sc.</option>
+                                                <option value="M.Com.">M.Com.</option>
+                                                <option value="M.A.">M.A.</option>
+                                                <option value="MBA">MBA</option>
+                                                <option value="MD/MS">MD/MS</option>
+                                                <option value="M.Pharm">M.Pharm</option>
+                                                <option value="LLM">LLM</option>
+                                                <option value="B.Tech/B.E.">B.Tech/B.E. (Undergraduate)</option>
+                                                <option value="B.Sc.">B.Sc.</option>
+                                                <option value="B.Com.">B.Com.</option>
+                                                <option value="B.A.">B.A.</option>
+                                                <option value="BBA">BBA</option>
+                                                <option value="MBBS">MBBS</option>
+                                                <option value="B.Pharm">B.Pharm</option>
+                                                <option value="LLB">LLB</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Other Qualification (if "Other" is selected) -->
+                                    <div class="form-row" id="otherQualificationContainer" style="display: none; margin-top: 10px;">
+                                        <div class="form-col">
+                                            <label for="otherQualification">Specify Other Qualification *</label>
+                                            <input type="text" id="otherQualification" class="form-control" placeholder="Please specify your qualification">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 16) Topic of the Ph.D. thesis with specialization -->
+                                <div class="form-subsection">
+                                    <h4><i class="bi bi-file-earmark-text-fill"></i> 16) Topic of the Ph.D. thesis with specialization</h4>
+
+                                    <div class="form-row">
+                                        <div class="form-col full-width">
+                                            <label for="phdThesisTopic">Ph.D. Thesis Topic with Specialization</label>
+                                            <textarea id="phdThesisTopic" name="phdThesisTopic" class="form-control"
+                                                      rows="4" placeholder="Enter Ph.D. thesis topic with specialization (if applicable)">
+                                            </textarea>
+                                            <small class="text-muted">Leave blank if you don't have a Ph.D.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="table-instructions">
+                                <p><i class="bi bi-info-circle"></i> Instructions:</p>
+                                <ul>
+                                    <li>Fill all fields for each examination</li>
+                                    <li>10th and 12th are mandatory fields</li>
+                                    <li>Division should be entered as text (e.g., First, Second, Distinction)</li>
+                                    <li>Percentage will be automatically calculated when you enter obtained and total marks</li>
+                                    <li>For CGPA, enter the CGPA directly in obtained marks field (Total will auto-set to 10)</li>
+                                </ul>
+                            </div>
+
+
+                            <!-- Form Actions -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearEducationForm()">
+                                    <i class="bi bi-eraser"></i> Clear All
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Save & Next (Step C)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Step C Content -->
+                <div class="step-content" id="stepC">
+                    <div class="content-header">
+                        <h2><i class="bi bi-briefcase-fill"></i> C. Employment Details as Full Time Teacher</h2>
+                        <p>Fill your teaching employment details in College/University</p>
+                    </div>
+
+                    <div class="employment-form">
+                        <form id="employmentDetailsForm">
+                            <!-- Instructions -->
+                            <div class="instructions-box">
+                                <p><i class="bi bi-info-circle-fill"></i> Instructions:</p>
+                                <ul>
+                                    <li>Attach true copies of the certificate of the employer in support of statement</li>
+                                    <li>Fill From and To dates - Experience will be auto-calculated</li>
+                                    <li>Select dates from calendar picker</li>
+                                    <li>Use "Add More Record" button to add additional employment entries</li>
+                                </ul>
+                            </div>
+
+                            <!-- Employment Table -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-building"></i> Particulars of employment as a Full time teacher in College/University, if any</h3>
+
+                                <div class="table-responsive">
+                                    <table class="employment-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name of the Institution/ University</th>
+                                                <th>Post held</th>
+                                                <th>Requisite qualification at the time of appointment as per UGC/State Govt.</th>
+                                                <th colspan="3">Teaching experience - Under graduate</th>
+                                                <th colspan="3">Teaching experience - Post graduate</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            <tr class="sub-header-row">
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>From</td>
+                                                <td>To</td>
+                                                <td>Total</td>
+                                                <td>From</td>
+                                                <td>To</td>
+                                                <td>Total</td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="employmentRows">
+                                            <!-- Row 1 -->
+                                            <tr class="employment-row" data-row="1">
+                                                <td>
+                                                    <input type="text" class="form-control institution-name" placeholder="Institution name">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control post-held" placeholder="e.g., Assistant Professor">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control qualification" placeholder="Qualification">
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control ug-from date-picker" onchange="calculateExperience(this)">
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control ug-to date-picker" onchange="calculateExperience(this)">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control ug-total experience-display" readonly placeholder="0 Years 0 Months 0 Days">
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control pg-from date-picker" onchange="calculateExperience(this)">
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control pg-to date-picker" onchange="calculateExperience(this)">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control pg-total experience-display" readonly placeholder="0 Years 0 Months 0 Days">
+                                                </td>
+                                                <td class="action-cell">
+                                                    <button type="button" class="btn-action btn-remove" onclick="removeEmploymentRow(this)" title="Remove this record">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Add More Rows Button -->
+                                <div class="text-center mt-3">
+                                    <button type="button" class="btn btn-add" id="addMoreEmploymentBtn" onclick="addEmploymentRow()">
+                                        <i class="bi bi-plus-circle"></i> Add More Record
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Total Experience Summary -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-calculator-fill"></i> Total Experience Summary</h3>
+
+                                <div class="experience-summary">
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <div class="summary-label">Total Under Graduate Experience:</div>
+                                            <div class="summary-value" id="totalUGExperience">0 Years 0 Months 0 Days</div>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <div class="summary-label">Total Post Graduate Experience:</div>
+                                            <div class="summary-value" id="totalPGExperience">0 Years 0 Months 0 Days</div>
+                                        </div>
+
+                                        <div class="summary-item total-item">
+                                            <div class="summary-label">Overall Total Teaching Experience:</div>
+                                            <div class="summary-value" id="totalExperience">0 Years 0 Months 0 Days</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearEmploymentForm()">
+                                    <i class="bi bi-eraser"></i> Clear All
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Save & Next (Step D)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Step D Content -->
+                <div class="step-content" id="stepD">
+                    <div class="content-header">
+                        <h2><i class="bi bi-person-check-fill"></i> D. Post Graduate Teacher Approval & Research Experience</h2>
+                        <p>Provide details of PG teacher approval and research experience</p>
+                    </div>
+
+                    <div class="research-experience-form">
+                        <form id="researchExperienceForm">
+                            <!-- Section 18: Post Graduate Teacher Approval -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-person-video3"></i> 18) Whether approved Post Graduate teacher:</h3>
+
+                                <div class="radio-group">
+                                    <label class="radio-option large">
+                                        <input type="radio" name="pgApproved" value="Yes" id="pgYes">
+                                        <span class="radio-label">Yes</span>
+                                    </label>
+                                    <label class="radio-option large">
+                                        <input type="radio" name="pgApproved" value="No" id="pgNo" checked>
+                                        <span class="radio-label">No</span>
+                                    </label>
+                                </div>
+
+                                <!-- Conditional Fields (Only show if Yes is selected) -->
+                                <div id="pgApprovalDetails" class="conditional-fields" style="display: none; margin-top: 25px;">
+                                    <div class="conditional-header">
+                                        <h4><i class="bi bi-file-text"></i> If yes, please provide the following details:</h4>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-col">
+                                            <label for="letterNo">Letter No. *</label>
+                                            <input type="text" id="letterNo" class="form-control" placeholder="Enter letter number">
+                                        </div>
+                                        <div class="form-col">
+                                            <label for="approvalDate">Date *</label>
+                                            <input type="date" id="approvalDate" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-col full-width">
+                                            <label for="universityName">Name of the University *</label>
+                                            <select id="universityName" class="form-control">
+                                                <option value="">Select University</option>
+                                                <option value="RTMNU">Rashtrasant Tukadoji Maharaj Nagpur University</option>
+                                                <option value="MU">University of Mumbai</option>
+                                                <option value="SPPU">Savitribai Phule Pune University</option>
+                                                <option value="BAMU">Dr. Babasaheb Ambedkar Marathwada University</option>
+                                                <option value="SU">Shivaji University, Kolhapur</option>
+                                                <option value="SGBU">Sant Gadge Baba Amravati University</option>
+                                                <option value="NMU">Kavayitri Bahinabai Chaudhari North Maharashtra University</option>
+                                                <option value="SRTMU">Swami Ramanand Teerth Marathwada University</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Other University Input (Conditional) -->
+                                    <div class="form-row" id="otherUniversityContainer" style="display: none;">
+                                        <div class="form-col full-width">
+                                            <label for="otherUniversity">Specify University Name *</label>
+                                            <input type="text" id="otherUniversity" class="form-control" placeholder="Enter university name">
+                                        </div>
+                                    </div>
+
+                                    <!-- Document Upload -->
+                                    <div class="form-row">
+                                        <div class="form-col full-width">
+                                            <div class="file-upload-section">
+                                                <h4><i class="bi bi-paperclip"></i> Upload Approval Letter/Certificate</h4>
+                                                <div class="file-upload-area" id="approvalUploadArea">
+                                                    <div class="upload-icon">
+                                                        <i class="bi bi-cloud-upload"></i>
+                                                    </div>
+                                                    <div class="upload-text">
+                                                        <p>Click to upload or drag and drop</p>
+                                                        <p class="upload-subtext">PDF, JPG, or PNG (Max 5MB)</p>
+                                                    </div>
+                                                    <input type="file" id="approvalDocument" class="file-input" accept=".pdf,.jpg,.jpeg,.png" onchange="handleApprovalUpload(event)">
+                                                </div>
+                                                <div class="file-preview" id="approvalPreview" style="display: none;">
+                                                    <div class="preview-item">
+                                                        <i class="bi bi-file-earmark-pdf"></i>
+                                                        <div class="file-info">
+                                                            <span class="file-name" id="approvalFileName"></span>
+                                                            <span class="file-size" id="approvalFileSize"></span>
+                                                        </div>
+                                                        <button type="button" class="btn-remove-file" onclick="removeApprovalFile()">
+                                                            <i class="bi bi-x"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 19: Research Experience -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-search"></i> 19) Research Experience (Excluding period spent for acquiring Ph.D. Degree):</h3>
+
+                                <div class="research-instructions">
+                                    <div class="instruction-box">
+                                        <i class="bi bi-info-circle"></i>
+                                        <div class="instruction-content">
+                                            <p><strong>Note:</strong> Attach testimonials/certificates for research experience. Do not include time spent on Ph.D. degree.</p>
+                                            <p>Click "Add Research Record" to add multiple research experiences.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Research Experience Table -->
+                                <div class="table-responsive">
+                                    <table class="research-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Organization/University</th>
+                                                <th>Position/Role</th>
+                                                <th>From Date</th>
+                                                <th>To Date</th>
+                                                <th>Duration</th>
+                                                <th>Nature of Research</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="researchRows">
+                                            <!-- Default Row -->
+                                            <tr class="research-row" data-row="1">
+                                                <td>
+                                                    <input type="text" class="form-control research-organization" placeholder="e.g., IIT Bombay, CSIR" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control research-position" placeholder="e.g., Research Scientist" required>
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control research-from date-picker" onchange="calculateResearchDuration(this)" required>
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control research-to date-picker" onchange="calculateResearchDuration(this)" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control research-duration" readonly placeholder="Auto calculated">
+                                                </td>
+                                                <td>
+                                                    <select class="form-control research-nature" required>
+                                                        <option value="">Select Nature</option>
+                                                        <option value="Fundamental">Fundamental Research</option>
+                                                        <option value="Applied">Applied Research</option>
+                                                        <option value="Experimental">Experimental Research</option>
+                                                        <option value="Theoretical">Theoretical Research</option>
+                                                        <option value="Field">Field Research</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </td>
+                                                <td class="action-cell">
+                                                    <button type="button" class="btn-action btn-remove" onclick="removeResearchRow(this)" title="Remove this record">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Add More Button -->
+                                <div class="text-center mt-3">
+                                    <button type="button" class="btn btn-add" onclick="addResearchRow()">
+                                        <i class="bi bi-plus-circle"></i> Add Research Record
+                                    </button>
+                                </div>
+
+                                <!-- Research Summary -->
+                                <div class="research-summary">
+                                    <h4><i class="bi bi-bar-chart"></i> Research Summary</h4>
+
+                                    <div class="summary-cards">
+                                        <div class="summary-card">
+                                            <div class="summary-card-header">
+                                                <i class="bi bi-clock-history"></i>
+                                                <h5>Total Research Experience</h5>
+                                            </div>
+                                            <div class="summary-card-body">
+                                                <div class="total-duration" id="totalResearchExperience">0 Years 0 Months 0 Days</div>
+                                                <p class="summary-note">(Excluding Ph.D. period)</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-card">
+                                            <div class="summary-card-header">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                                <h5>Number of papers published</h5>
+                                            </div>
+                                            <div class="summary-card-body">
+                                                <div class="publication-count">
+                                                    <input type="number" id="papersPublished" class="form-control count-input" min="0" value="0" onchange="updateSummary()">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-card">
+                                            <div class="summary-card-header">
+                                                <i class="bi bi-file-earmark-lock"></i>
+                                                <h5>No. of Patents/Copyright Filed</h5>
+                                            </div>
+                                            <div class="summary-card-body">
+                                                <div class="patent-count">
+                                                    <input type="number" id="patentsFiled" class="form-control count-input" min="0" value="0" onchange="updateSummary()">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-card">
+                                            <div class="summary-card-header">
+                                                <i class="bi bi-award"></i>
+                                                <h5>No. of Patents/Copyright Granted</h5>
+                                            </div>
+                                            <div class="summary-card-body">
+                                                <div class="patent-count">
+                                                    <input type="number" id="patentsGranted" class="form-control count-input" min="0" value="0" onchange="updateSummary()">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Document Upload Section -->
+                                <div class="document-upload-section">
+                                    <h4><i class="bi bi-paperclip"></i> Upload Research Testimonials/Certificates</h4>
+                                    <p class="upload-description">Upload supporting documents for your research experience (multiple files allowed)</p>
+
+                                    <div class="upload-zone" id="researchUploadZone">
+                                        <div class="upload-placeholder">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                            <h5>Drag & Drop files here</h5>
+                                            <p>or click to browse</p>
+                                            <p class="file-types">Supported: PDF, JPG, PNG, DOC, DOCX (Max 10MB each)</p>
+                                        </div>
+                                        <input type="file" id="researchDocuments" class="file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="handleResearchUpload(event)">
+                                    </div>
+
+                                    <!-- Uploaded Files List -->
+                                    <div class="uploaded-files" id="uploadedFilesList">
+                                        <h5>Uploaded Documents</h5>
+                                        <div class="files-list" id="filesListContainer">
+                                            <div class="empty-state">
+                                                <i class="bi bi-folder-x"></i>
+                                                <p>No documents uploaded yet</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearResearchForm()">
+                                    <i class="bi bi-eraser"></i> Clear All
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Save & Next (Step E)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Step E Content -->
+                <div class="step-content" id="stepE">
+                    <div class="content-header">
+                        <h2><i class="bi bi-journal-text"></i> E. Publication Details</h2>
+                        <p>Provide details of your publications including books, research papers, and other works</p>
+                    </div>
+
+                    <div class="publication-form">
+                        <form id="publicationDetailsForm">
+                            <!-- Instructions -->
+                            <div class="instructions-box">
+                                <div class="instruction-icon">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </div>
+                                <div class="instruction-content">
+                                    <h4><i class="bi bi-lightbulb"></i> Important Instructions:</h4>
+                                    <ul>
+                                        <li>Include name of author(s), title of publication, publishers, Research Journal, Year etc.</li>
+                                        <li>Attach separate sheets if necessary</li>
+                                        <li>For books authored, provide ISBN and other relevant details</li>
+                                        <li>Click "Add Publication" to add multiple publications</li>
+                                        <li>Use the tabs to switch between different publication types</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Publication Type Tabs -->
+                            <div class="publication-tabs">
+                                <div class="tab-buttons">
+                                    <button type="button" class="tab-btn active" data-tab="books" onclick="switchTab('books')">
+                                        <i class="bi bi-book"></i> Books Authored
+                                    </button>
+                                    <button type="button" class="tab-btn" data-tab="researchPapers" onclick="switchTab('researchPapers')">
+                                        <i class="bi bi-file-earmark-text"></i> Research Papers
+                                    </button>
+                                    <button type="button" class="tab-btn" data-tab="chapters" onclick="switchTab('chapters')">
+                                        <i class="bi bi-file-earmark"></i> Book Chapters
+                                    </button>
+                                    <button type="button" class="tab-btn" data-tab="others" onclick="switchTab('others')">
+                                        <i class="bi bi-files"></i> Other Publications
+                                    </button>
+                                </div>
+
+                                <!-- Books Authored Tab -->
+                                <div class="tab-content active" id="booksTab">
+                                    <div class="tab-header">
+                                        <h3><i class="bi bi-book"></i> Books Authored</h3>
+                                        <div class="book-count">
+                                            <span id="booksCount">0</span> Books Added
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="publication-table books-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>SL No.</th>
+                                                    <th>Title of Book</th>
+                                                    <th>Author(s)</th>
+                                                    <th>Publisher</th>
+                                                    <th>Year</th>
+                                                    <th>ISBN</th>
+                                                    <th>Edition</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="booksRows">
+                                                <!-- Books will be added here dynamically -->
+                                                <tr class="empty-row">
+                                                    <td colspan="8" class="text-center">
+                                                        <div class="empty-state">
+                                                            <i class="bi bi-book"></i>
+                                                            <p>No books added yet. Click "Add Book" to get started.</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-add" onclick="addBookRow()">
+                                            <i class="bi bi-plus-circle"></i> Add Book
+                                        </button>
+                                    </div>
+
+                                    <!-- Book Upload Section -->
+                                    <div class="upload-section">
+                                        <h4><i class="bi bi-paperclip"></i> Upload Book Covers/Copyright Certificates</h4>
+                                        <div class="upload-zone" id="bookUploadZone">
+                                            <div class="upload-placeholder">
+                                                <i class="bi bi-cloud-arrow-up"></i>
+                                                <h5>Drag & Drop book files here</h5>
+                                                <p>or click to browse</p>
+                                                <p class="file-types">Supported: PDF, JPG, PNG (Max 10MB each)</p>
+                                            </div>
+                                            <input type="file" id="bookDocuments" class="file-input" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleBookUpload(event)">
+                                        </div>
+
+                                        <div class="uploaded-files" id="uploadedBooksList">
+                                            <h5>Uploaded Book Documents</h5>
+                                            <div class="files-list" id="booksFilesList">
+                                                <div class="empty-state">
+                                                    <i class="bi bi-folder-x"></i>
+                                                    <p>No book documents uploaded yet</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Research Papers Tab -->
+                                <div class="tab-content" id="researchPapersTab">
+                                    <div class="tab-header">
+                                        <h3><i class="bi bi-file-earmark-text"></i> Research Papers</h3>
+                                        <div class="paper-count">
+                                            <span id="papersCount">0</span> Research Papers Added
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="publication-table papers-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>SL No.</th>
+                                                    <th>Title of Paper</th>
+                                                    <th>Author(s)</th>
+                                                    <th>Journal/Conference</th>
+                                                    <th>Publisher</th>
+                                                    <th>Year</th>
+                                                    <th>Volume/Issue</th>
+                                                    <th>DOI/ISBN</th>
+                                                    <th>Indexing</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="papersRows">
+                                                <tr class="empty-row">
+                                                    <td colspan="10" class="text-center">
+                                                        <div class="empty-state">
+                                                            <i class="bi bi-file-earmark-text"></i>
+                                                            <p>No research papers added yet. Click "Add Research Paper" to get started.</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-add" onclick="addResearchPaperRow()">
+                                            <i class="bi bi-plus-circle"></i> Add Research Paper
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Book Chapters Tab -->
+                                <div class="tab-content" id="chaptersTab">
+                                    <div class="tab-header">
+                                        <h3><i class="bi bi-file-earmark"></i> Book Chapters</h3>
+                                        <div class="chapter-count">
+                                            <span id="chaptersCount">0</span> Chapters Added
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="publication-table chapters-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>SL No.</th>
+                                                    <th>Chapter Title</th>
+                                                    <th>Book Title</th>
+                                                    <th>Author(s)</th>
+                                                    <th>Publisher</th>
+                                                    <th>Year</th>
+                                                    <th>Page Numbers</th>
+                                                    <th>ISBN</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="chaptersRows">
+                                                <tr class="empty-row">
+                                                    <td colspan="9" class="text-center">
+                                                        <div class="empty-state">
+                                                            <i class="bi bi-file-earmark"></i>
+                                                            <p>No book chapters added yet. Click "Add Chapter" to get started.</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-add" onclick="addChapterRow()">
+                                            <i class="bi bi-plus-circle"></i> Add Chapter
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Other Publications Tab -->
+                                <div class="tab-content" id="othersTab">
+                                    <div class="tab-header">
+                                        <h3><i class="bi bi-files"></i> Other Publications</h3>
+                                        <div class="other-count">
+                                            <span id="othersCount">0</span> Other Publications Added
+                                        </div>
+                                    </div>
+
+                                    <div class="publication-types">
+                                        <div class="type-options">
+                                            <label class="type-option">
+                                                <input type="radio" name="otherType" value="patent" checked>
+                                                <span class="type-label">
+                                                    <i class="bi bi-file-earmark-lock"></i>
+                                                    Patent
+                                                </span>
+                                            </label>
+                                            <label class="type-option">
+                                                <input type="radio" name="otherType" value="copyright">
+                                                <span class="type-label">
+                                                    <i class="bi bi-c-circle"></i>
+                                                    Copyright
+                                                </span>
+                                            </label>
+                                            <label class="type-option">
+                                                <input type="radio" name="otherType" value="technicalReport">
+                                                <span class="type-label">
+                                                    <i class="bi bi-file-earmark-ruled"></i>
+                                                    Technical Report
+                                                </span>
+                                            </label>
+                                            <label class="type-option">
+                                                <input type="radio" name="otherType" value="conferenceProceeding">
+                                                <span class="type-label">
+                                                    <i class="bi bi-mic"></i>
+                                                    Conference Proceeding
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="publication-table others-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>SL No.</th>
+                                                    <th>Publication Type</th>
+                                                    <th>Title</th>
+                                                    <th>Author(s)</th>
+                                                    <th>Publisher/Organization</th>
+                                                    <th>Year</th>
+                                                    <th>Reference No.</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="othersRows">
+                                                <tr class="empty-row">
+                                                    <td colspan="9" class="text-center">
+                                                        <div class="empty-state">
+                                                            <i class="bi bi-files"></i>
+                                                            <p>No other publications added yet. Click "Add Publication" to get started.</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-add" onclick="addOtherPublicationRow()">
+                                            <i class="bi bi-plus-circle"></i> Add Publication
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Publication Summary -->
+                            <div class="publication-summary">
+                                <h3><i class="bi bi-bar-chart"></i> Publication Summary</h3>
+
+                                <div class="summary-grid">
+                                    <div class="summary-card">
+                                        <div class="summary-icon">
+                                            <i class="bi bi-book"></i>
+                                        </div>
+                                        <div class="summary-details">
+                                            <h4>Books Authored</h4>
+                                            <div class="summary-count" id="summaryBooks">0</div>
+                                            <p class="summary-label">Total Books</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="summary-card">
+                                        <div class="summary-icon">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+                                        <div class="summary-details">
+                                            <h4>Research Papers</h4>
+                                            <div class="summary-count" id="summaryPapers">0</div>
+                                            <p class="summary-label">Journal & Conference Papers</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="summary-card">
+                                        <div class="summary-icon">
+                                            <i class="bi bi-file-earmark"></i>
+                                        </div>
+                                        <div class="summary-details">
+                                            <h4>Book Chapters</h4>
+                                            <div class="summary-count" id="summaryChapters">0</div>
+                                            <p class="summary-label">Chapters Contributed</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="summary-card">
+                                        <div class="summary-icon">
+                                            <i class="bi bi-files"></i>
+                                        </div>
+                                        <div class="summary-details">
+                                            <h4>Other Publications</h4>
+                                            <div class="summary-count" id="summaryOthers">0</div>
+                                            <p class="summary-label">Patents, Reports, etc.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="total-summary">
+                                    <div class="total-card">
+                                        <h4><i class="bi bi-trophy"></i> Total Publications</h4>
+                                        <div class="total-count" id="totalPublications">0</div>
+                                        <p class="total-label">All Publication Types Combined</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bulk Upload Option -->
+                            <div class="bulk-upload-section">
+                                <h3><i class="bi bi-upload"></i> Bulk Upload Option</h3>
+                                <p class="upload-description">Upload a single Excel/CSV file containing all your publication details</p>
+
+                                @* <div class="bulk-upload-area">
+                                    <div class="upload-box" id="bulkUploadBox">
+                                        <div class="upload-content">
+                                            <i class="bi bi-file-earmark-excel"></i>
+                                            <h5>Upload Excel/CSV File</h5>
+                                            <p>Format: Author, Title, Type, Year, Publisher, etc.</p>
+                                            <p class="file-format">Download <a href="#" onclick="downloadTemplate()">template file</a> for reference</p>
+                                        </div>
+                                        <input type="file" id="bulkUpload" class="file-input" accept=".xlsx,.xls,.csv" onchange="handleBulkUpload(event)">
+                                    </div>
+
+                                    <div class="upload-info">
+                                        <p><i class="bi bi-info-circle"></i> File should contain columns for all required publication details</p>
+                                        <p><i class="bi bi-check-circle"></i> Maximum file size: 5MB</p>
+                                    </div>
+                                </div> *@
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearPublicationForm()">
+                                    <i class="bi bi-eraser"></i> Clear All
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Save & Next (Step F)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div> 
+                <!-- Step F Content -->
+                <div class="step-content" id="stepF">
+                    <div class="content-header">
+                        <h2><i class="bi bi-briefcase"></i> F. Professional Experience & Additional Information</h2>
+                        <p>Provide details of your professional experience and any additional information</p>
+                    </div>
+
+                    <div class="professional-experience-form">
+                        <form id="professionalExperienceForm">
+                            <!-- Section 21: Professional Experience -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-building"></i> 21) Professional experience, if any:</h3>
+
+                                <div class="instructions-box">
+                                    <div class="instruction-icon">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </div>
+                                    <div class="instruction-content">
+                                        <h4><i class="bi bi-lightbulb"></i> Important Note:</h4>
+                                        <p>Attach true copies of the certificate of the employer in support of statement.</p>
+                                        <p>Click "Add Experience" to add multiple professional experiences.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Professional Experience Table -->
+                                <div class="table-responsive">
+                                    <table class="professional-table">
+                                        <thead>
+                                            <tr>
+                                                <th>SL No.</th>
+                                                <th>Name of Institution</th>
+                                                <th>Post Held</th>
+                                                <th>From Date</th>
+                                                <th>To Date</th>
+                                                <th>Duration</th>
+                                                <th>Administrative Experience (Years)</th>
+                                                <th>Nature of Work</th>
+                                                <th>Remarks</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="experienceRows">
+                                            <!-- Default Row -->
+                                            <tr class="experience-row" data-row="1">
+                                                <td class="serial-no">1</td>
+                                                <td>
+                                                    <input type="text" class="form-control institution-name" placeholder="Institution name" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control post-held" placeholder="Post held" required>
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control from-date date-picker" onchange="calculateExperienceDuration(this)" required>
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control to-date date-picker" onchange="calculateExperienceDuration(this)" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control duration-display" readonly placeholder="Auto calculated">
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control admin-experience" min="0" step="0.1"
+                                                           placeholder="Years" onchange="updateTotalAdminExperience()">
+                                                </td>
+                                                <td>
+                                                    <select class="form-control nature-of-work">
+                                                        <option value="">Select Nature</option>
+                                                        <option value="Teaching">Teaching</option>
+                                                        <option value="Research">Research</option>
+                                                        <option value="Administration">Administration</option>
+                                                        <option value="Technical">Technical</option>
+                                                        <option value="Consultancy">Consultancy</option>
+                                                        <option value="Industry">Industry</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control remarks" placeholder="Any remarks">
+                                                </td>
+                                                <td class="action-cell">
+                                                    <button type="button" class="btn-action btn-delete" onclick="deleteExperienceRow(this)" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Add More Button -->
+                                <div class="text-center mt-3">
+                                    <button type="button" class="btn btn-add" onclick="addExperienceRow()">
+                                        <i class="bi bi-plus-circle"></i> Add Experience
+                                    </button>
+                                </div>
+
+                                <!-- Experience Summary -->
+                                <div class="experience-summary">
+                                    <h4><i class="bi bi-calculator"></i> Experience Summary</h4>
+
+                                    <div class="summary-cards">
+                                        <div class="summary-card">
+                                            <div class="summary-icon">
+                                                <i class="bi bi-clock-history"></i>
+                                            </div>
+                                            <div class="summary-details">
+                                                <h5>Total Professional Experience</h5>
+                                                <div class="summary-value" id="totalProfessionalExperience">0 Years 0 Months 0 Days</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-card">
+                                            <div class="summary-icon">
+                                                <i class="bi bi-building-gear"></i>
+                                            </div>
+                                            <div class="summary-details">
+                                                <h5>Total Administrative Experience</h5>
+                                                <div class="summary-value" id="totalAdminExperience">0 Years</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-card">
+                                            <div class="summary-icon">
+                                                <i class="bi bi-building"></i>
+                                            </div>
+                                            <div class="summary-details">
+                                                <h5>Total Institutions</h5>
+                                                <div class="summary-value" id="totalInstitutions">1</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Document Upload Section -->
+                                <div class="document-upload-section">
+                                    <h4><i class="bi bi-paperclip"></i> Upload Experience Certificates</h4>
+                                    <p class="upload-description">Upload experience certificates from employers (one file per experience recommended)</p>
+
+                                    <div class="upload-container">
+                                        <div class="upload-zone" id="experienceUploadZone">
+                                            <div class="upload-placeholder">
+                                                <i class="bi bi-cloud-arrow-up"></i>
+                                                <h5>Drag & Drop Certificates Here</h5>
+                                                <p>or click to browse</p>
+                                                <p class="file-types">Supported: PDF, JPG, PNG (Max 10MB each)</p>
+                                            </div>
+                                            <input type="file" id="experienceDocuments" class="file-input" multiple
+                                                   accept=".pdf,.jpg,.jpeg,.png" onchange="handleExperienceUpload(event)">
+                                        </div>
+
+                                        <div class="upload-info">
+                                            <p><i class="bi bi-info-circle"></i> Name files appropriately (e.g., Experience_IITBombay.pdf)</p>
+                                            <p><i class="bi bi-check-circle"></i> Upload certificates in chronological order</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Uploaded Files List -->
+                                    <div class="uploaded-files" id="uploadedExperienceFiles">
+                                        <h5>Uploaded Certificates</h5>
+                                        <div class="files-list" id="experienceFilesList">
+                                            <div class="empty-state">
+                                                <i class="bi bi-folder-x"></i>
+                                                <p>No certificates uploaded yet</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 22: Additional Information -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-info-square"></i> 22) Additional information, if any:</h3>
+
+                                <div class="additional-info-container">
+                                    <div class="info-types">
+                                        <div class="type-selector">
+                                            <button type="button" class="info-type-btn active" data-type="awards" onclick="switchInfoType('awards')">
+                                                <i class="bi bi-award"></i> Awards & Honors
+                                            </button>
+                                            <button type="button" class="info-type-btn" data-type="memberships" onclick="switchInfoType('memberships')">
+                                                <i class="bi bi-people"></i> Memberships
+                                            </button>
+                                            <button type="button" class="info-type-btn" data-type="projects" onclick="switchInfoType('projects')">
+                                                <i class="bi bi-diagram-3"></i> Projects
+                                            </button>
+                                            <button type="button" class="info-type-btn" data-type="other" onclick="switchInfoType('other')">
+                                                <i class="bi bi-plus-circle"></i> Other Information
+                                            </button>
+                                        </div>
+
+                                        <!-- Awards & Honors -->
+                                        <div class="info-content active" id="awardsContent">
+                                            <div class="info-header">
+                                                <h4><i class="bi bi-award"></i> Awards & Honors</h4>
+                                                <button type="button" class="btn btn-sm btn-add" onclick="addAward()">
+                                                    <i class="bi bi-plus"></i> Add Award
+                                                </button>
+                                            </div>
+
+                                            <div class="info-table-container">
+                                                <table class="info-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>SL No.</th>
+                                                            <th>Award/Honor Name</th>
+                                                            <th>Awarding Organization</th>
+                                                            <th>Year</th>
+                                                            <th>Level</th>
+                                                            <th>Description</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="awardsRows">
+                                                        <tr class="empty-row">
+                                                            <td colspan="7" class="text-center">
+                                                                <div class="empty-state">
+                                                                    <i class="bi bi-award"></i>
+                                                                    <p>No awards added yet</p>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <!-- Professional Memberships -->
+                                        <div class="info-content" id="membershipsContent">
+                                            <div class="info-header">
+                                                <h4><i class="bi bi-people"></i> Professional Memberships</h4>
+                                                <button type="button" class="btn btn-sm btn-add" onclick="addMembership()">
+                                                    <i class="bi bi-plus"></i> Add Membership
+                                                </button>
+                                            </div>
+
+                                            <div class="info-table-container">
+                                                <table class="info-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>SL No.</th>
+                                                            <th>Organization/Association</th>
+                                                            <th>Membership Type</th>
+                                                            <th>Membership ID</th>
+                                                            <th>Validity</th>
+                                                            <th>Status</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="membershipsRows">
+                                                        <tr class="empty-row">
+                                                            <td colspan="7" class="text-center">
+                                                                <div class="empty-state">
+                                                                    <i class="bi bi-people"></i>
+                                                                    <p>No memberships added yet</p>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <!-- Projects -->
+                                        <div class="info-content" id="projectsContent">
+                                            <div class="info-header">
+                                                <h4><i class="bi bi-diagram-3"></i> Projects (Sponsored/Consultancy)</h4>
+                                                <button type="button" class="btn btn-sm btn-add" onclick="addProject()">
+                                                    <i class="bi bi-plus"></i> Add Project
+                                                </button>
+                                            </div>
+
+                                            <div class="info-table-container">
+                                                <table class="info-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>SL No.</th>
+                                                            <th>Project Title</th>
+                                                            <th>Funding Agency</th>
+                                                            <th>Role</th>
+                                                            <th>Duration</th>
+                                                            <th>Amount</th>
+                                                            <th>Status</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="projectsRows">
+                                                        <tr class="empty-row">
+                                                            <td colspan="8" class="text-center">
+                                                                <div class="empty-state">
+                                                                    <i class="bi bi-diagram-3"></i>
+                                                                    <p>No projects added yet</p>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <!-- Other Information -->
+                                        <div class="info-content" id="otherContent">
+                                            <div class="info-header">
+                                                <h4><i class="bi bi-plus-circle"></i> Other Information</h4>
+                                                <p class="info-description">Add any other relevant information not covered above</p>
+                                            </div>
+
+                                            <div class="other-info-form">
+                                                <div class="form-group">
+                                                    <label for="otherInfo"><i class="bi bi-pencil"></i> Additional Details</label>
+                                                    <textarea id="otherInfo" class="form-control" rows="8"
+                                                              placeholder="Please provide any additional information that may be relevant to your application..."></textarea>
+                                                    <small class="text-muted">Maximum 2000 characters</small>
+                                                    <div class="char-counter">
+                                                        <span id="charCount">0</span>/2000 characters
+                                                    </div>
+                                                </div>
+
+                                                <div class="additional-uploads">
+                                                    <h5><i class="bi bi-paperclip"></i> Additional Documents</h5>
+                                                    <div class="upload-zone small" id="otherUploadZone">
+                                                        <div class="upload-placeholder">
+                                                            <i class="bi bi-cloud-plus"></i>
+                                                            <p>Upload additional supporting documents</p>
+                                                        </div>
+                                                        <input type="file" id="otherDocuments" class="file-input" multiple
+                                                               accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="handleOtherUpload(event)">
+                                                    </div>
+
+                                                    <div class="uploaded-files small" id="otherFilesList">
+                                                        <h6>Uploaded Documents</h6>
+                                                        <div class="files-list" id="otherFilesContainer">
+                                                            <div class="empty-state">
+                                                                <i class="bi bi-file-earmark"></i>
+                                                                <p>No additional documents</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearProfessionalForm()">
+                                    <i class="bi bi-eraser"></i> Clear All
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Save & Next (Step G)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Step G Content - Documents Upload & Final Submit -->
+                <div class="step-content" id="stepG">
+                    <div class="content-header">
+                        <h2><i class="bi bi-folder-fill"></i> G. Documents Upload & Final Submit</h2>
+                        <p>Upload all required documents and submit your application</p>
+                    </div>
+
+                    <div class="documents-upload-form">
+                        <form id="finalSubmitForm">
+                            <!-- Instructions -->
+                            <div class="instructions-box">
+                                <div class="instruction-icon">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </div>
+                                <div class="instruction-content">
+                                    <h4><i class="bi bi-lightbulb"></i> Important Instructions:</h4>
+                                    <ul>
+                                        <li>Upload all required documents as per the checklist below</li>
+                                        <li>File formats: PDF, JPG, JPEG, PNG (Max file size: 5MB each)</li>
+                                        <li>Ensure documents are clear, legible and complete</li>
+                                        <li>Name files appropriately (e.g., Degree_Certificate.pdf)</li>
+                                        <li>All * marked documents are mandatory</li>
+                                        <li>After uploading all documents, click "Submit Application"</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Document Checklist -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-check-circle"></i> Document Checklist</h3>
+
+                                <div class="documents-checklist">
+                                    <div class="checklist-header">
+                                        <div class="checklist-title">Required Documents</div>
+                                        <div class="checklist-status">Status</div>
+                                    </div>
+
+                                    <div class="checklist-items">
+                                        <!-- Document 1: Photograph -->
+                                       @*  <div class="checklist-item required" data-doc="photograph">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-image"></i>
+                                                    <span>Recent Passport Size Photograph *</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>White background, 2MB max</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('photograph')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+ *@
+                                        <!-- Document 2: Signature -->
+                                        <div class="checklist-item required" data-doc="signature">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-pen"></i>
+                                                    <span>Signature *</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>Scanned signature on white paper</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('signature')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 3: Aadhar Card -->
+                                        <div class="checklist-item required" data-doc="aadhar">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-card-checklist"></i>
+                                                    <span>Aadhar Card *</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>Front and back side in single PDF</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('aadhar')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 4: 10th Marksheet -->
+                                        <div class="checklist-item required" data-doc="marksheet10">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-mortarboard"></i>
+                                                    <span>10th Marksheet *</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>Complete marksheet/certificate</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('marksheet10')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 5: 12th Marksheet -->
+                                        <div class="checklist-item required" data-doc="marksheet12">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-mortarboard-fill"></i>
+                                                    <span>12th Marksheet *</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>Complete marksheet/certificate</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('marksheet12')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 6: UG Degree Certificate -->
+                                        <div class="checklist-item required" data-doc="ugDegree">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-file-earmark-text"></i>
+                                                    <span>UG Degree Certificate *</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>Provisional/Degree certificate</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('ugDegree')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 7: PG Degree Certificate -->
+                                        <div class="checklist-item" data-doc="pgDegree">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-file-earmark-text-fill"></i>
+                                                    <span>PG Degree Certificate</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>If applicable</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('pgDegree')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 8: PhD Certificate -->
+                                        <div class="checklist-item" data-doc="phdCertificate">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-award"></i>
+                                                    <span>PhD Certificate</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>If applicable</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('phdCertificate')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 9: Experience Certificates -->
+                                        <div class="checklist-item" data-doc="experience">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-briefcase"></i>
+                                                    <span>Experience Certificates</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>From previous employers</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('experience')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 10: Caste Certificate -->
+                                        <div class="checklist-item optional" data-doc="caste">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-file-earmark-check"></i>
+                                                    <span>Caste Certificate (If applicable)</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>For SC/ST/OBC candidates</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('caste')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Document 11: Other Documents -->
+                                        <div class="checklist-item optional" data-doc="other">
+                                            <div class="doc-info">
+                                                <div class="doc-name">
+                                                    <i class="bi bi-folder-plus"></i>
+                                                    <span>Other Relevant Documents</span>
+                                                </div>
+                                                <div class="doc-desc">
+                                                    <span>Any other supporting documents</span>
+                                                </div>
+                                            </div>
+                                            <div class="doc-status">
+                                                <span class="status-badge pending">Pending</span>
+                                                <button type="button" class="btn-upload-doc" onclick="uploadDocument('other')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Summary -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-graph-up"></i> Upload Summary</h3>
+
+                                <div class="upload-summary">
+                                    <div class="summary-cards">
+                                        <div class="summary-card">
+                                            <div class="summary-icon">
+                                                <i class="bi bi-file-earmark"></i>
+                                            </div>
+                                            <div class="summary-details">
+                                                <h5>Total Documents</h5>
+                                                <div class="summary-value" id="totalDocsCount">11</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-card">
+                                            <div class="summary-icon">
+                                                <i class="bi bi-check-circle"></i>
+                                            </div>
+                                            <div class="summary-details">
+                                                <h5>Uploaded</h5>
+                                                <div class="summary-value" id="uploadedDocsCount">0</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-card">
+                                            <div class="summary-icon">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                            </div>
+                                            <div class="summary-details">
+                                                <h5>Pending</h5>
+                                                <div class="summary-value" id="pendingDocsCount">11</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="summary-card">
+                                            <div class="summary-icon">
+                                                <i class="bi bi-star"></i>
+                                            </div>
+                                            <div class="summary-details">
+                                                <h5>Mandatory</h5>
+                                                <div class="summary-value" id="mandatoryDocsCount">6</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="completion-status">
+                                        <div class="progress-container">
+                                            <div class="progress-label">
+                                                <span>Upload Progress</span>
+                                                <span id="progressPercentage">0%</span>
+                                            </div>
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bulk Upload Option -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-upload"></i> Bulk Upload Option</h3>
+
+                                <div class="bulk-upload-area">
+                                    <div class="upload-zone" id="bulkUploadZone">
+                                        <div class="upload-placeholder">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                            <h5>Drag & Drop Multiple Files</h5>
+                                            <p>or click to browse</p>
+                                            <p class="file-types">Supported: PDF, JPG, JPEG, PNG (Max 5MB each)</p>
+                                        </div>
+                                        <input type="file" id="bulkUploadInput" class="file-input" multiple
+                                               accept=".pdf,.jpg,.jpeg,.png" onchange="handleBulkUpload(event)">
+                                    </div>
+
+                                    <div class="bulk-instructions">
+                                        <p><i class="bi bi-info-circle"></i> Files will be automatically categorized based on their names</p>
+                                        <p><i class="bi bi-lightbulb"></i> Tip: Name files descriptively (e.g., "10th_Marksheet.pdf")</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Final Declaration -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-shield-check"></i> Final Declaration</h3>
+
+                                <div class="declaration-box">
+                                    <div class="declaration-content">
+                                        <p>I hereby declare that:</p>
+                                        <ol>
+                                            <li>All the information provided in this application form is true, correct and complete to the best of my knowledge and belief.</li>
+                                            <li>I have uploaded all required documents as per the checklist.</li>
+                                            <li>I understand that any false statement or concealment of material information may result in cancellation of my candidature and legal action as per university rules and regulations.</li>
+                                            <li>I have read and understood all the instructions carefully and undertake to abide by the provisions of rules and regulations issued by the University from time to time.</li>
+                                            <li>I agree that the decision of the University authorities shall be final and binding regarding my application.</li>
+                                        </ol>
+                                    </div>
+
+                                    <div class="declaration-agreement">
+                                        <div class="agreement-checkbox">
+                                            <input type="checkbox" id="agreeDeclaration" class="form-checkbox" required>
+                                            <label for="agreeDeclaration">
+                                                <span class="agreement-label">I agree to the above declaration *</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="declaration-signature">
+                                            <div class="signature-field">
+                                                <label for="digitalSignature">Digital Signature *</label>
+                                                <input type="text" id="digitalSignature" class="form-control"
+                                                       placeholder="Type your full name as digital signature" required>
+                                            </div>
+
+                                            <div class="declaration-date">
+                                                <label for="declarationDate">Date *</label>
+                                                <input type="date" id="declarationDate" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Application Summary -->
+                            <div class="form-section">
+                                <h3><i class="bi bi-clipboard-data"></i> Application Summary</h3>
+
+                                <div class="application-summary">
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <div class="summary-label">Application Type</div>
+                                            <div class="summary-value">PhD Supervisor Registration</div>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <div class="summary-label">Applicant Name</div>
+                                            <div class="summary-value" id="applicantNameSummary">Loading...</div>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <div class="summary-label">Email ID</div>
+                                            <div class="summary-value" id="emailSummary">Loading...</div>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <div class="summary-label">Application Date</div>
+                                            <div class="summary-value" id="applicationDate">Loading...</div>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <div class="summary-label">Total Sections</div>
+                                            <div class="summary-value">7 Sections Completed</div>
+                                        </div>
+
+                                        <div class="summary-item">
+                                            <div class="summary-label">Documents Uploaded</div>
+                                            <div class="summary-value" id="documentsSummary">0/11</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Final Submit Actions -->
+                            <div class="final-submit-section">
+                                <div class="submit-actions">
+                                    <div class="action-buttons">
+                                        <button type="button" class="btn btn-secondary btn-large" onclick="saveApplicationDraft()">
+                                            <i class="bi bi-save"></i> Save as Draft
+                                        </button>
+
+                                        <button type="button" class="btn btn-warning btn-large" onclick="previewApplication()">
+                                            <i class="bi bi-printer"></i> Preview Application
+                                        </button>
+
+                                        <button type="submit" class="btn btn-success btn-large" id="submitApplicationBtn">
+                                            <i class="bi bi-send-check"></i> Submit Application
+                                        </button>
+                                    </div>
+
+                                    <div class="submit-info">
+                                        <p><i class="bi bi-info-circle"></i> Once submitted, you cannot make changes to your application</p>
+                                        <p><i class="bi bi-check-circle"></i> Application will be reviewed by RTMNU authorities</p>
+                                        <p><i class="bi bi-clock"></i> Expected processing time: 7-10 working days</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Other steps... -->
+                
+            </div>
+        </main>
+    </div>
+
+    <!-- EXTERNAL JAVASCRIPT -->
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+﻿@{
+    ViewData["Title"] = "Supervisor Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RTM Nagpur University</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- LEFT SIDE - UNIVERSITY INFO -->
+        <div class="left-side">
+            <div class="university-info">
+                <div class="logo">
+                    <img src="~/Image/Nagpur_University_logo.jpg" alt="RTMNU Logo"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIHJ4PSIxMCIgZmlsbD0iIzFlM2M3MiIvPjx0ZXh0IHg9IjQwIiB5PSI0NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiPlJUTU5VPC90ZXh0Pjwvc3ZnPg==';">
+                </div>
+                <h1>RASHTRASANT TUKADOJI MAHARAJ NAGPUR UNIVERSITY</h1>
+                <p class="tagline">Excellence in Education Since 1923</p>
+
+                @* <div class="features">
+                    <div class="feature">
+                        <i class="bi bi-award"></i>
+                        <span>NAAC Accredited</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-people"></i>
+                        <span>400+ Affiliated Colleges</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-book"></i>
+                        <span>500+ Academic Programs</span>
+                    </div>
+                </div> *@
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE - LOGIN FORM -->
+        <div class="right-side">
+            <div class="login-container">
+                <div class="login-card">
+                    <!-- LOGIN HEADER -->
+                    <div class="login-header">
+                        <div class="login-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <h2>Supervisor Login</h2>
+                        <p>Sign in to your account</p>
+                    </div>
+
+                    <div class="login-body">
+                        <!-- INFO MESSAGE -->
+                        @* <div class="info-message">
+                            <i class="bi bi-lightbulb"></i>
+                            <span>Double-click any field for demo credentials</span>
+                        </div>
+ *@
+                        <!-- LOGIN FORM -->
+                        <form method="post" asp-controller="Account" asp-action="Login" id="loginForm">
+                            @Html.AntiForgeryToken()
+
+                            <!-- EMAIL FIELD -->
+                            <div class="form-field">
+                                <label for="Email" class="form-label">
+                                    <i class="bi bi-envelope"></i> Email Address
+                                </label>
+                                <input type="email" id="Email" name="Email" class="form-input"
+                                       placeholder="Enter your university email"
+                                       autocomplete="off"
+                                       onfocus="this.value=''">
+                                <div class="input-hint">
+                                    Enter your university email address
+                                </div>
+                            </div>
+
+                            <!-- PASSWORD FIELD -->
+                            <div class="form-field">
+                                <label for="Password" class="form-label">
+                                    <i class="bi bi-key"></i> Password
+                                </label>
+                                <div class="password-wrapper">
+                                    <input type="password" id="Password" name="Password" class="form-input"
+                                           placeholder="Enter your password"
+                                           autocomplete="off"
+                                           onfocus="this.value=''">
+                                    <button type="button" class="toggle-password" id="togglePassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="input-hint">
+                                    Minimum 8 characters with letters and numbers
+                                </div>
+                            </div>
+
+                            <!-- REMEMBER ME & FORGOT PASSWORD -->
+                            <div class="form-options">
+                                <div class="remember-me">
+                                    <input type="checkbox" id="RememberMe" name="RememberMe">
+                                    <label for="RememberMe">Remember me</label>
+                                </div>
+                                <a href="#" class="forgot-password" id="forgotPasswordLink">
+                                    <i class="bi bi-question-circle"></i> Forgot Password?
+                                </a>
+                            </div>
+
+                            <!-- SUBMIT BUTTON -->
+                            <button type="submit" class="submit-btn" id="loginButton">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                <span class="btn-text">Sign In</span>
+                            </button>
+                        </form>
+
+                        <!-- REGISTER LINK -->
+                        <div class="register-link">
+                            <span>Don't have an account?</span>
+                            <a asp-controller="Account" asp-action="Register" class="register-link-text">
+                                Create account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE (Hidden by default) -->
+    <div id="dashboardPage" class="dashboard-container" style="display: none;">
+        <div class="dashboard-header">
+            <div class="dashboard-logo">
+                <img src="~/Image/Nagpur_University_logo.jpg" alt="RTMNU Logo">
+            </div>
+            <div class="dashboard-title">
+                <h1>Supervisor Dashboard</h1>
+                <p>Welcome back, Supervisor!</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </div>
+
+        <div class="dashboard-content">
+            <h2>Your Dashboard</h2>
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <i class="bi bi-people"></i>
+                    <h3>Student Management</h3>
+                    <p>Manage student records and profiles</p>
+                </div>
+                <div class="dashboard-card">
+                    <i class="bi bi-file-text"></i>
+                    <h3>Exam Papers</h3>
+                    <p>View and manage examination papers</p>
+                </div>
+                <div class="dashboard-card">
+                    <i class="bi bi-calendar-check"></i>
+                    <h3>Schedule</h3>
+                    <p>View examination schedule</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JS -->
+    <script src="~/js/login.js" asp-append-version="true"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Supervisor Dashboard";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RTM Nagpur University</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- HEADER -->
+        <header class="dashboard-header">
+            <div class="header-logo">
+                <img src="~/Image/Nagpur_University_logo.jpg" alt="RTMNU Logo"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIyMCIgZmlsbD0iIzFlM2M3MiIvPjx0ZXh0IHg9IjIwIiB5PSIyNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiPlJUTU5VPC90ZXh0Pjwvc3ZnPg=='">
+                <div class="logo-text">
+                    <h2>RTM Nagpur University</h2>
+                    <p>Supervisor Portal</p>
+                </div>
+            </div>
+
+            <button class="btn-logout" onclick="logout()">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="dashboard-main">
+            <p class="step-info">Fill all form fields to go to next step</p>
+
+            <div class="stepper">
+                <div class="step active" onclick="showStep('A')">A</div>
+                <div class="line active"></div>
+
+                <div class="step" onclick="showStep('B')">B</div>
+                <div class="line"></div>
+
+                <div class="step" onclick="showStep('C')">C</div>
+                <div class="line"></div>
+
+                <div class="step" onclick="showStep('D')">D</div>
+                <div class="line"></div>
+
+                <div class="step" onclick="showStep('E')">E</div>
+                <div class="line"></div>
+
+                <div class="step" onclick="showStep('F')">F</div>
+                <div class="line"></div>
+
+                <div class="step" onclick="showStep('G')">G</div>
+                <div class="line"></div>
+
+                <div class="step" onclick="showStep('H')">H</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Dashboard JS -->
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+</body>
+</html>

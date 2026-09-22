@@ -1,0 +1,358 @@
+﻿/* ===== AUTH PAGES ===== */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+/* Auth Container */
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* Auth Card */
+.auth-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Auth Header */
+.auth-header {
+    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.auth-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    opacity: 0.95;
+    font-weight: 400;
+}
+
+/* Auth Body */
+.auth-body {
+    padding: 30px;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5eb;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s;
+    background: #fff;
+}
+
+    .form-control:focus {
+        border-color: #4facfe;
+        box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+    }
+
+/* Input Group (for password) */
+.input-group {
+    position: relative;
+    display: flex;
+}
+
+    .input-group .form-control {
+        flex: 1;
+        padding-right: 45px;
+    }
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 18px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+/* Name Fields Row */
+.name-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.name-field {
+    flex: 1;
+}
+
+/* Password Strength */
+.password-strength {
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+}
+
+/* Messages */
+.message {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .message.error {
+        background: #fee;
+        color: #d32f2f;
+        border-left: 4px solid #d32f2f;
+    }
+
+    .message.success {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border-left: 4px solid #2e7d32;
+    }
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+/* Auth Link */
+.auth-link {
+    text-align: center;
+    margin-top: 25px;
+    color: #666;
+    font-size: 14px;
+}
+
+    .auth-link a {
+        color: #4facfe;
+        text-decoration: none;
+        font-weight: 600;
+        margin-left: 5px;
+    }
+
+        .auth-link a:hover {
+            text-decoration: underline;
+        }
+
+/* Checkbox */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+    .checkbox-group input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .checkbox-group label {
+        font-size: 14px;
+        color: #555;
+        cursor: pointer;
+    }
+
+/* Helper Text */
+.helper-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Validation Messages */
+.validation-message {
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+}
+
+    .validation-message.error {
+        color: #d32f2f;
+        display: block;
+    }
+
+/* ===== RESPONSIVE DESIGN ===== */
+/* Mobile (up to 576px) */
+@media (max-width: 576px) {
+    .auth-page {
+        padding: 10px;
+        background: white;
+    }
+
+    .auth-container {
+        max-width: 100%;
+    }
+
+    .auth-card {
+        border-radius: 10px;
+        box-shadow: none;
+    }
+
+    .auth-header {
+        padding: 25px 20px;
+    }
+
+    .auth-body {
+        padding: 25px 20px;
+    }
+
+    .auth-title {
+        font-size: 22px;
+    }
+
+    .auth-icon {
+        font-size: 40px;
+    }
+
+    .name-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-control {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .btn-submit {
+        padding: 12px;
+        font-size: 15px;
+    }
+}
+
+/* Tablet (577px to 768px) */
+@media (min-width: 577px) and (max-width: 768px) {
+    .auth-container {
+        max-width: 450px;
+    }
+
+    .auth-card {
+        border-radius: 12px;
+    }
+}
+
+/* Desktop (769px and above) */
+@media (min-width: 769px) {
+    .auth-container {
+        max-width: 420px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .auth-card {
+        background: #1e1e1e;
+        color: #fff;
+    }
+
+    .form-label {
+        color: #eee;
+    }
+
+    .form-control {
+        background: #2d2d2d;
+        border-color: #444;
+        color: #fff;
+    }
+
+        .form-control:focus {
+            border-color: #4facfe;
+        }
+
+    .auth-link {
+        color: #aaa;
+    }
+
+    .helper-text {
+        color: #999;
+    }
+}

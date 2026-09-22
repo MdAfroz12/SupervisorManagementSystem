@@ -1,0 +1,111 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supervisor Registration</title>
+    <link rel="stylesheet" href="~/css/register.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="bi bi-person-plus auth-icon"></i>
+                <h1>Create Account</h1>
+                <p>Supervisor Registration</p>
+            </div>
+
+            <div class="auth-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert error">
+                        <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert success">
+                        <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                <form id="registerForm" method="post" action="/Account/Register">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name*</label>
+                            <input type="text" name="FirstName" placeholder="First name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name*</label>
+                            <input type="text" name="LastName" placeholder="Last name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address*</label>
+                        <input type="email" name="Email" placeholder="Enter your email" required>
+                        <small>We'll never share your email</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mobile Number*</label>
+                        <input type="tel" name="Mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                        <small>10 digits without country code</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Aadhar Number*</label>
+                        <input type="text" name="AadharNumber" placeholder="12-digit Aadhar number" pattern="[0-9\s]{12,14}" required>
+                        <small>Enter 12-digit Aadhar number</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password*</label>
+                        <div class="password-container">
+                            <input type="password" name="Password" placeholder="Create password" minlength="6" required>
+                            <button type="button" class="toggle-password"><i class="bi bi-eye"></i></button>
+                        </div>
+                        <small>Minimum 6 characters</small>
+                        <div class="password-strength">
+                            <div class="strength-bar"></div>
+                            <div>Password strength: <span id="strengthText">None</span></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password*</label>
+                        <div class="password-container">
+                            <input type="password" name="ConfirmPassword" placeholder="Confirm password" required>
+                            <button type="button" class="toggle-password"><i class="bi bi-eye"></i></button>
+                        </div>
+                        <div id="passwordMatch"></div>
+                    </div>
+
+                    <div class="form-group terms">
+                        <input type="checkbox" id="terms" name="AgreeTerms" value="true" required>
+                        <label for="terms">I agree to the Terms of Service and Privacy Policy</label>
+                        <div class="error" id="termsError"></div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-person-plus"></i> Create Account
+                    </button>
+
+                    <div class="login-link">
+                        Already have an account? <a href="/Account/Login">Sign in here</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/register.js"></script>
+</body>
+</html>
